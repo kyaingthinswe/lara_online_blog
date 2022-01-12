@@ -7,3 +7,16 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~venobox/dist/venobox.min.css";
+@import "~sweetalert2/src/sweetalert2";
+
+.uploader_ui{
+    width: 100px;
+    height: 100px;
+}
+.table tr td,.table tr th{
+    vertical-align: middle;
+}
+.image_ui{
+    margin-right: -30px;
+}
