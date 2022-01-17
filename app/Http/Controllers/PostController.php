@@ -21,10 +21,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::when(isset(request()->search),function($q){
-            $search = request()->search;
-            $q->where('title','LIKE',"%$search%");
-            })->latest('id')->paginate(5);
+        $posts = Post::search()->latest('id')->paginate(5);
 
 //        $posts = Post::when(isset(request()->search),function ($query){
 //            $search = request()->search;
@@ -54,13 +51,15 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-//        return $request;
+//       return $request;
         $request->validate([
             'title' => 'required|unique:posts,title|min:3',
             'category' => 'required|exists:categories,id|integer',
             'description' => 'required|min:20',
-            "photo" => "required",
-            "photo.*" => "file|mimes:jpeg,png|max:3000"
+            "photos" => "required",
+            "photos.*" => "file|mimes:jpeg,png|max:3000",
+            'tags' => 'required',
+            'tags.*'=>'integer|exists:tags,id'
         ]);
 //        return $request->photo;
 
@@ -74,13 +73,16 @@ class PostController extends Controller
         $post->isPublish = true;
         $post->save();
 
+        //save record to pivot tb
+        $post->tags()->attach($request->tags);
+
         if (!Storage::exists('public/thumbnail')){
             Storage::makeDirectory('public/thumbnail');
         }
 
         //Storage->photo ကို အရင်သိမ်းပြီးမှ db ထဲကို သိမ်းမယ်
-        if ($request->hasFile('photo')){
-            foreach ($request->file('photo') as $photo){
+        if ($request->hasFile('photos')){
+            foreach ($request->file('photos') as $photo){
 
                 //store file in storage
                 //$dir = 'public/photo/';
@@ -102,7 +104,6 @@ class PostController extends Controller
             }
         }
 
-
         return redirect()->route('post.index')->with('status','Post is Created');
     }
 
@@ -114,6 +115,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+//        return $post->tags;
+//        return $post;
         return view('post.show',compact('post'));
     }
 
@@ -125,6 +128,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+//        return $post;
         return view('post.edit',compact('post'));
     }
 
@@ -137,14 +141,19 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+//        return $request;
         $request->validate([
             'title' => "required|unique:posts,title,$post->id|min:3",
             'category' => 'required|exists:categories,id|integer',
             'description' => 'required|min:20',
+
         ]);
+        //tags ကို အရင်ဖျတ် ပြီးရင် ပြန်ထည့်
+        $post->tags()->detach();
+        $post->tags()->attach($request->tags);
 
         $post->title = $request->title;
-        $post->slug = Str::slug($request->title);
+        $post->slug = $request->title;
         $post->description = $request->description;
         $post->excerpt = Str::words($request->description,20);
         $post->category_id = $request->category;

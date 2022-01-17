@@ -14,8 +14,15 @@
     width: 100px;
     height: 100px;
 }
-.table tr td,.table tr th{
-    vertical-align: middle;
+
+
+//.table tr th:nth-child(3){
+//    width: 100px !important;
+//}
+
+
+td [data-gall]:first-child .image_ui{
+    margin-left: 0;
 }
 .image_ui{
     margin-right: -30px;

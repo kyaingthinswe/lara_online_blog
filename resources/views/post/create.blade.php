@@ -2,8 +2,8 @@
 @section('content')
 
     <div class="container">
-        <div class="row">
-            <div class="col-12  ">
+        <div class="row d-flex justify-content-center">
+            <div class="col-8  ">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4>Create Post</h4>
@@ -31,11 +31,33 @@
                                     <small class="text-danger font-weight-bold">{{$message}}</small>
                                     @enderror
                                 </div>
+                                <div class="mb-3">
+                                    <label for="">Select Tag</label>
+                                    <br>
+                                    @foreach(\App\Models\Tag::all() as $tag)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" name="tags[]" type="checkbox" value="{{$tag->id}}" id="tag{{$tag->id}}" {{in_array($tag->id,old('tags',[]))?"checked":""}}>
+                                        <label class="form-check-label" for="tag{{$tag->id}}">
+                                            {{$tag->title}}
+                                        </label>
+                                    </div>
 
+                                    @endforeach
+                                    <br>
+                                    @error('tags')
+                                    <small class="text-danger font-weight-bold">{{$message}}</small>
+                                    @enderror
+                                    @error('tags.*')
+                                    <small class="text-danger font-weight-bold">{{$message}}</small>
+                                    @enderror
+                                </div>
                                 <div class="mb-3">
                                     <label >Photo</label>
-                                    <input type="file" name="photo[]" value="{{old('photo')}}" class="form-control @error('photo') is-invalid @enderror" multiple>
-                                    @error('photo')
+                                    <input type="file" name="photos[]" value="{{old('photos')}}" class="form-control @error('photos') is-invalid @enderror" multiple>
+                                    @error('photos')
+                                    <small class="text-danger font-weight-bold">{{$message}}</small>
+                                    @enderror
+                                    @error('photos.*')
                                     <small class="text-danger font-weight-bold">{{$message}}</small>
                                     @enderror
                                 </div>

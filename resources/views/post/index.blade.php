@@ -28,14 +28,15 @@
                     <div class="card-body">
 
 
-                        <table class="table table-hover ">
+                        <table class="table table-hover align-middle ">
                             <thead>
                             <tr>
                                 <th>#</th>
                                 <th class="w-25">Title</th>
                                 <th>Photo</th>
-                                <th>Is Publish</th>
                                 <th>Category</th>
+                                <th>Is Publish</th>
+                                <th>Tag</th>
                                 <th>Owner</th>
                                 <th>Control</th>
                                 <th>Created_at</th>
@@ -45,17 +46,23 @@
                             @forelse($posts as $p)
                                 <tr>
                                     <td>{{$p->id}}</td>
-                                    <td class="small ">{{\Illuminate\Support\Str::words($p->title,10)}}</td>
-                                    <td>
-                                        @forelse($p->photos()->latest()->limit(3)->get() as $photo)
+{{--                                    <td class="small ">{{\Illuminate\Support\Str::words($p->title,10)}}</td>--}}
+                                    <td class="small">{{$p->short_title}}</td>
+                                    <td >
+{{--                                        @forelse($p->photos()->latest()->limit(3)->get() as $photo)--}}
+                                        @forelse($p->photos as $key=>$photo)
+                                            @if($key == 3)
+                                                @break
+                                            @endif
                                             <a class="venobox" data-gall="photo{{$p->id}}" href="{{asset('storage/photo/'.$photo->name)}}">
-                                                <img src="{{asset('storage/thumbnail/'.$photo->name)}}" class="rounded-circle border border-2 border-primary image_ui" height="40" alt="image alt"/>
+                                                <img src="{{asset('storage/thumbnail/'.$photo->name)}}" class="rounded-circle border border-2 border-white shadow-sm image_ui" height="40" alt="image alt"/>
                                             </a>
                                         @empty
                                             <p class="text-muted">no photo</p>
                                         @endforelse
                                     </td>
-                                    <td>
+                                    <td>{{$p->category->title ?? "Unknown Category"}}</td>
+                                    <td >
 
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox"  id="flexSwitchCheckChecked" {{$p->isPublish ? 'checked' : ''}}>
@@ -67,8 +74,15 @@
 
 
                                     </td>
-                                    <td>{{$p->category->title}}</td>
-                                    <td>{{$p->user->name ?? "Unknown User"}} </td>
+                                    <td class="text-nowrap">
+                                        @foreach($p->tags as $tag)
+                                            <span class="badge bg-pill bg-primary bg-">
+                                                <i class="fas fa-hashtag fa-fw"></i>
+                                                {{$tag->title}}
+                                            </span>
+                                        @endforeach
+                                    </td>
+                                    <td><small>{{$p->user->name ?? "Unknown User"}}</small> </td>
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-sm btn-outline-primary " href="{{route('post.show',$p->id)}}">
@@ -86,16 +100,8 @@
                                             @method('delete')
                                         </form>
                                     </td>
-                                    <td>
-                                        <p class="mb-0">
-                                            <i class="fas fa-calendar fa-fw"></i>
-                                            {{$p->created_at->format('Y-d-m')}}
-                                        </p>
-
-                                        <p class="mb-0">
-                                            <i class="fas fa-clock fa-fw"></i>
-                                            {{$p->created_at->format('H:m a')}}
-                                        </p>
+                                    <td class="text-nowrap">
+                                        <small>{!! $p->time !!}</small>
                                     </td>
                                 </tr>
                             @empty

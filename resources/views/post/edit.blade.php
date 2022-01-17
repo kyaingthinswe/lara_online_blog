@@ -2,8 +2,8 @@
 @section('content')
 
     <div class="container">
-        <div class="row">
-            <div class="col-12  ">
+        <div class="row d-flex justify-content-center">
+            <div class="col-8  ">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h4>Edit Post</h4>
@@ -35,6 +35,28 @@
                                 @enderror
                             </div>
 
+                        <div class="mb-3">
+                            <label for="">Select Tag</label>
+                            <br>
+{{--                            {{var_dump($post->tags->pluck('id')->toArray())}}--}}
+                            @foreach(\App\Models\Tag::all() as $tag)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" form="updateForm" name="tags[]" type="checkbox" value="{{$tag->id}}" id="tag{{$tag->id}}" {{in_array($tag->id,old('tags',$post->tags->pluck("id")->toArray()))?'checked':' '}}>
+                                    <label class="form-check-label" for="tag{{$tag->id}}">
+                                        {{$tag->title}}
+                                    </label>
+                                </div>
+
+                            @endforeach
+                            <br>
+                            @error('tags')
+                            <small class="text-danger font-weight-bold">{{$message}}</small>
+                            @enderror
+                            @error('tags.*')
+                            <small class="text-danger font-weight-bold">{{$message}}</small>
+                            @enderror
+                        </div>
+
                             <div class="mb-3">
                                 <label for="">Photo</label>
                                 <div class="overflow-scroll d-flex border rounded p-3">
@@ -43,8 +65,11 @@
                                         @csrf
                                         <input type="hidden" name="post_id" value="{{$post->id}}">
                                         <label >Photo</label>
-                                        <input type="file" name="photo[]" value="{{old('photo')}}"  id="photoUploadInput" class="form-control @error('photo') is-invalid @enderror" multiple>
-                                        @error('photo')
+                                        <input type="file" name="photos[]" value="{{old('photo')}}"  id="photoUploadInput" class="form-control @error('photos') is-invalid @enderror" multiple>
+                                        @error('photos')
+                                        <small class="text-danger font-weight-bold">{{$message}}</small>
+                                        @enderror
+                                        @error('photos.*')
                                         <small class="text-danger font-weight-bold">{{$message}}</small>
                                         @enderror
                                         <button class="btn btn-primary">Upload</button>
@@ -52,6 +77,7 @@
                                     <div class="uploader_ui d-flex justify-content-center align-items-center px-3 border border-1 border-dark"  id="photoUploadIcon">
                                         <i class="fas fa-plus fa-2x"></i>
                                     </div>
+
                                     @forelse($post->photos as $photo)
                                         <div  class="d-inline-block position-relative ">
                                             <form action="{{route('photo.destroy',$photo->id)}}" class="position-absolute start-0 bottom-0" method="post">

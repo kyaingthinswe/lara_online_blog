@@ -18,7 +18,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        //
+        return view('photo.index');
     }
 
     /**
@@ -39,15 +39,16 @@ class PhotoController extends Controller
      */
     public function store(StorePhotoRequest $request)
     {
+
         $request->validate([
-            'photo' => 'nullable',
-            'photo.*' => 'file|mimes:jpeg,png|max:3000',
+            'photos' => 'nullable',
+            'photos.*' => 'file|mimes:jpeg,png|max:3000',
             'post_id' => 'required|integer',
         ]);
 
-        if ($request->hasFile('photo')){
+        if ($request->hasFile('photos')){
 
-            foreach ($request->file('photo') as $photo){
+            foreach ($request->file('photos') as $photo){
                 //photo save in Storage
                 $dir = 'public/photo/';
                 $newName = uniqid()."_photo.".$photo->extension();
@@ -67,7 +68,7 @@ class PhotoController extends Controller
             }
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('status','Photo is added');
 
     }
 
