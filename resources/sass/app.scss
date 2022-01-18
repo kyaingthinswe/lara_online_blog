@@ -25,5 +25,19 @@ td [data-gall]:first-child .image_ui{
     margin-left: 0;
 }
 .image_ui{
-    margin-right: -30px;
+    margin-right: -50px;
 }
+
+.uploader-ui{
+    width: 100px;
+    height: 100px;
+}
+
+td [data-gall]:first-child .list-thumbnail{
+    margin-left: 0;
+}
+
+.list-thumbnail{
+    margin-left: -30px;
+}
+

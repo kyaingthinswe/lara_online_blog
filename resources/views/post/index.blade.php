@@ -34,8 +34,8 @@
                                 <th>#</th>
                                 <th class="w-25">Title</th>
                                 <th>Photo</th>
-                                <th>Category</th>
                                 <th>Is Publish</th>
+                                <th>Category</th>
                                 <th>Tag</th>
                                 <th>Owner</th>
                                 <th>Control</th>
@@ -46,9 +46,9 @@
                             @forelse($posts as $p)
                                 <tr>
                                     <td>{{$p->id}}</td>
-{{--                                    <td class="small ">{{\Illuminate\Support\Str::words($p->title,10)}}</td>--}}
+{{--                                    <td class="small ">{{Str::words($p->title,10)}}</td>--}}
                                     <td class="small">{{$p->short_title}}</td>
-                                    <td >
+                                    <td class="text-nowrap" >
 {{--                                        @forelse($p->photos()->latest()->limit(3)->get() as $photo)--}}
                                         @forelse($p->photos as $key=>$photo)
                                             @if($key == 3)
@@ -61,7 +61,6 @@
                                             <p class="text-muted">no photo</p>
                                         @endforelse
                                     </td>
-                                    <td>{{$p->category->title ?? "Unknown Category"}}</td>
                                     <td >
 
                                         <div class="form-check form-switch">
@@ -74,7 +73,9 @@
 
 
                                     </td>
-                                    <td class="text-nowrap">
+                                    <td>{{$p->category->title ?? "Unknown Category"}}</td>
+
+                                    <td >
                                         @foreach($p->tags as $tag)
                                             <span class="badge bg-pill bg-primary bg-">
                                                 <i class="fas fa-hashtag fa-fw"></i>
@@ -82,7 +83,7 @@
                                             </span>
                                         @endforeach
                                     </td>
-                                    <td><small>{{$p->user->name ?? "Unknown User"}}</small> </td>
+                                    <td>{{$p->user->name ?? "Unknown User"}} </td>
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-sm btn-outline-primary " href="{{route('post.show',$p->id)}}">
@@ -122,3 +123,8 @@
     </div>
 
 @endsection
+
+
+{{--@include('sample')--}}
+
+
